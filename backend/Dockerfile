@@ -9,3 +9,5 @@ COPY package*.json ./
 COPY . .
 
 EXPOSE 5001
+
+CMD ["tail", "-f", "/dev/null"]
