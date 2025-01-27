@@ -1,14 +1,17 @@
-<h2>Register</h2>
-<form #userForm="ngForm" (ngSubmit)="onSubmit(userForm)">
-    <div>
-        <label for="emaim" class="px-3">Email :</label>
-        <input type="text"  [(ngModel)] = "user.login" name="nom" 
-            placeholder="Votre nom">
-    </div>
-    <div>
-        <label for="Password" class="px-3">Mot de passe :</label>
-        <input type="password" [(ngModel)] = "user.password" name="password" 
-            placeholder="Votre mot de passe">
-    </div>
-    <button type="submit">Register</button>
-</form>
+<div id="register-container">
+    <h2>Inscription</h2>
+  
+    <form (ngSubmit)="register()">
+      <div>
+        <label for="email">Email</label>
+        <input id="email" [(ngModel)]="email" name="email" type="email" required />
+      </div>
+  
+      <div>
+        <label for="password">Mot de passe</label>
+        <input id="password" [(ngModel)]="password" name="password" type="password" required />
+      </div>
+  
+      <button type="submit">S'inscrire</button>
+    </form>
+  </div>

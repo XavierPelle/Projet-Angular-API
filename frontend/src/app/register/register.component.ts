@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import {FormsModule, NgForm } from '@angular/forms';
+import {FormsModule} from '@angular/forms';
+import { AuthService } from '../services/auth.service';
+
 
 @Component({
   selector: 'app-register',
@@ -10,12 +12,27 @@ import {FormsModule, NgForm } from '@angular/forms';
 
 })
 export class RegisterComponent {
-  user = {
-    login: '',
-    password: ''
-  };
-  
-  onSubmit = (userForm: NgForm) => {
-    console.log(userForm.value)
+  email: string = '';
+  password: string = '';
+  errorMessage: string = '';
+  successMessage: string = '';
+  constructor(private authService: AuthService) {}
+
+  register(): void {
+    if (!this.email || !this.password) {
+      this.errorMessage = 'Veuillez remplir tous les champs';
+      return;
+    }
+
+    this.authService.register(this.email, this.password).subscribe({
+      next: () => {
+        this.successMessage = 'Inscription réussie. Vous pouvez maintenant vous connecter.';
+        this.errorMessage = '';
+      },
+      error: (error: any) => {
+        this.errorMessage = 'Erreur lors de l\'inscription : ' + error.error.message;
+        this.successMessage = '';
+      },
+    });
   }
 }
