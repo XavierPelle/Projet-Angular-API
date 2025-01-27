@@ -1,0 +1,7 @@
+<div class="container">
+    <div *ngFor="let post of postList" class="post">
+        <h2>{{ post.title }}</h2>
+        <p>{{ post.content }}</p>
+        <button class="remove-btn" (click)="deletePost(post)">Supprimer</button>
+    </div>
+</div>
