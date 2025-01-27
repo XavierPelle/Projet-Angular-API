@@ -24,7 +24,6 @@ services:
       - "5001:5001"
     depends_on:
       - db 
-    command: ["sh", "./start.sh", "db"]
 
   angular:
     container_name: angular
