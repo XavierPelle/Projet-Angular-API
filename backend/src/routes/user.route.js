@@ -9,15 +9,13 @@ const router = Router();
 // });
 
 //Route d'inscription et de connexion
-router.post("/create", controller.createUser);
-router.put('/updateUser', controller.updateUser);
+router.post("/register", controller.register);
 router.post('/login', controller.login);
 
 
 router.get("/", controller.getAll);
 router.get("/:email", controller.getUserByEmail);
 router.put("/update/email/:email", controller.updateUserByEmail);
-router.put("/update/:id", controller.updateUser);
 router.delete("/delete/:id", controller.deleteUser);
 router.get("/:id", controller.getUserById);
 
