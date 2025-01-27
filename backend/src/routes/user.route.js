@@ -1,11 +1,21 @@
 const { Router } = require('express');
 const controller = require("../controller/user.controller");
-
 const router = Router();
 
-router.get("/", controller.getAll);
-router.get("/:email", controller.getUserByEmail)
+// Route de test pour voir si le middleware fonctionne
+// router.get("/bonjour", (req, res) => {
+//     console.log(req.auth);
+//     res.send("Bonjour");
+// });
+
+//Route d'inscription et de connexion
 router.post("/create", controller.createUser);
+router.put('/updateUser', controller.updateUser);
+router.post('/login', controller.login);
+
+
+router.get("/", controller.getAll);
+router.get("/:email", controller.getUserByEmail);
 router.put("/update/email/:email", controller.updateUserByEmail);
 router.put("/update/:id", controller.updateUser);
 router.delete("/delete/:id", controller.deleteUser);
