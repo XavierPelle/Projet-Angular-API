@@ -1,11 +1,9 @@
 #!/bin/sh
-set -e
 
-host="$1"
 shift
 cmd="$@"
 
-until pg_isready -h "$host"; do
+until pg_isready -h "db"; do
   >&2 echo "Postgres is unavailable - sleeping"
   sleep 1
 done
@@ -13,6 +11,5 @@ done
 >&2 echo "Postgres is up - executing command"
 
 npm install
-
 node src/app.js
 
