@@ -26,39 +26,35 @@ const getUserById = async (req, res) => {
   }
 };
 
-const createUser = async (req, res) => {
-  // try {
-  //   const user = await User.create(req.body);
-  //   res.status(201).json(user);
-  // } catch (err) {
-  //   res.status(500).json({ message: "server error user has not been created" });
-  // }
+const createUser = async (req) => {
   try {
     const { adresseMail, role } = req.body;
     if (!adresseMail || !role) {
       throw new Error("Information manquant");
     }
-
+    
     const nombreCaractererAleatoire = Math.floor(Math.random() * 20) + 1;
     const grainDeSel = outils.createGrainDeSel(nombreCaractererAleatoire);
     if (!grainDeSel) {
       throw new Error("Erreur lors de la création du grain de sel");
     }
-
+    
     const newUtilisateur = { email: adresseMail, password: "", salt: grainDeSel, role, tokenAccess: "", tokenRefresh: "" };
     if (!newUtilisateur) {
       throw new Error("Information manquant");
     }
-
+    
     const user = await User.create(newUtilisateur);
     if (!user) {
       throw new Error("Utilisateur non crée");
     }
-
-    res.status(201).json({ grainDeSel: grainDeSel });
+    
+    return grainDeSel;
+    // res.status(201).json({ grainDeSel: grainDeSel });
   }
   catch (err) {
-    res.status(500).json({ message: "Aucun utilisateur crée" });
+    return "";
+    // res.status(500).json({ message: "Aucun utilisateur crée" });
   }
 };
 
@@ -78,19 +74,11 @@ const getUserByEmail = async (req, res) => {
   }
 };
 
-const updateUser = async (req, res) => {
-  // try {
-  //   const id = req.params.id;
-  //   await User.update(req.body, { where: { id: id } });
-  //   res.status(200).json({ message: "User updated !" });
-  // } catch (err) {
-  //   res.status(500).json({ message: "server error the user has not been updated !" });
-  // }
-
+const updateUser = async (req, res, grainDeSel) => {
   try {
     // Récupérer le mot de passe hasher en FrontEnd
-    const { adresseMail, grainDeSel, motDePasse, /* mdpHasher */ } = req.body;
-    if (!adresseMail || !grainDeSel || !motDePasse) {
+    const { adresseMail, motDePasse, /* mdpHasher */ } = req.body;
+    if (!adresseMail || !motDePasse) {
       throw new Error("Information manquant");
     }
 
@@ -104,58 +92,58 @@ const updateUser = async (req, res) => {
     if (!user) {
       throw new Error("Utilisateur non crée");
     }
-
+    
     const { issuedAt, deviceFingerprint } = outils.createData(req);
     if (!issuedAt || !deviceFingerprint) {
       throw new Error("Erreur lors de la création des données de token");
     }
-
+    
     const expiresInAccess = outils.createExpiresIn();
     if (!expiresInAccess) {
       throw new Error("Erreur lors de la création de l'expiration de l'accès");
     }
-
+    
     const data = `${user.id}${user.role}${issuedAt}${expiresInAccess}${deviceFingerprint}`;
     const { nonce, proofOfWork } = outils.createNonce(data);
     if (!nonce || !proofOfWork) {
       throw new Error("Erreur lors de la création des données de nonce et proofOfWork");
     }
-
+    
     const payloadAccess = {
       userId: user.id, role: user.role,
       issuedAt, expiresIn: expiresInAccess, nonce, proofOfWork,
       scope: ['read', 'write'], issuer: "authServer",
       deviceFingerprint
     }
-
+    
     const tokenA = outils.generateToken(payloadAccess);
     if (!tokenA) {
       throw new Error("Erreur lors de la création du token");
     }
-
+    
     const expiresInRefresh = outils.createExpiresIn(false);
     if (!expiresInRefresh) {
       throw new Error("Erreur lors de la création de l'expiration du rafraichissement");
     }
-
+    
     const payloadRefresh = {
       userId: user.id,
       issuedAt,
       expiresIn: expiresInRefresh,
       deviceFingerprint
     };
-
+    
     const tokenR = outils.generateToken(payloadRefresh);
     if (!tokenR) {
       throw new Error("Erreur lors de la création du token");
     }
-
+    
     await User.update({
       password: mdpHasher,
       tokenAccess: `Bearer ${tokenA}`,
       tokenRefresh: tokenR
     }, { where: { email: adresseMail } });
-
+    
     res.cookie("tokenAccess", `Bearer ${tokenA}`/* , { httpOnly: false, secure: false, sameSite: "strict" } */);
     res.cookie("tokenRefresh", tokenR/* , { httpOnly: false, secure: false, sameSite: "strict" } */);
     res.status(201).json({ message: "Utilisateur mis à jour" });
@@ -165,6 +153,11 @@ const updateUser = async (req, res) => {
   }
 };
 
+const register = async (req, res) => {
+  const grainDeSel = await createUser(req);
+
+  await updateUser(req, res, grainDeSel);
+};
 const deleteUser = async (req, res) => {
   const id = req.params.id;
 
@@ -273,8 +266,7 @@ module.exports = {
   getAll,
   getUserById,
   getUserByEmail,
-  createUser,
-  updateUser,
+  register,
   deleteUser,
   updateUserByEmail,
   login,
