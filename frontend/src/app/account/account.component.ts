@@ -15,7 +15,7 @@ export class AccountComponent {
               private router: Router) {}
 
   ngOnInit(): void {
-    if (this.authService.isLoggedIn()) {
+    if (!this.authService.isLoggedIn()) {
       this.router.navigate(['/login']);
     }
   }

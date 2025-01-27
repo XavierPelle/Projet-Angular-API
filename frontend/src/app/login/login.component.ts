@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   selector: 'app-login',
   imports: [NgIf],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
+  styleUrls: ['./login.component.scss'],
   standalone: true
 })
 export class LoginComponent implements OnInit {
