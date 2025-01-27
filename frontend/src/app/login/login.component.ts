@@ -35,14 +35,16 @@ export class LoginComponent implements OnInit {
     return this.loginForm.get('password')!;
   }
 
-  onSubmit(): void {
+  login(): void {
+    console.log("test");
     if (this.loginForm.valid) {
+      console.log('test2')
       const { email, password } = this.loginForm.value;
-
       this.authService.login(email, password).subscribe(
         (response:any) => {
           this.authService.saveToken(response.token);
-          this.router.navigate(['/account']);
+          //this.router.navigate(['/account']);
+          console.log("ares connexion")
         },
         (error:any) => {
           console.error('Erreur de connexion', error);

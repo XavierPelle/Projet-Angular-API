@@ -18,6 +18,10 @@ export class HeaderComponent {
 
   ngOnInit(): void {
     this.userRole = this.authService.getRole();
+    
+  }
+  get isUserLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
   }
 }
 

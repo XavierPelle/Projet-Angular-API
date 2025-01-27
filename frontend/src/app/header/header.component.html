@@ -2,7 +2,7 @@
     <h1>Posts World</h1>
     <ul>
         <li><button routerLink="/posts">Go to Home</button></li>
-        <li><button routerLink="/account">Account</button></li>
+        <li><button *ngIf="!isUserLoggedIn" routerLink="/login">Connect</button></li>
         <li><button  *ngIf="userRole === 'admin'" routerLink="/post/create">Creer un posts</button></li>
     </ul>
 </header>

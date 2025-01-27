@@ -34,7 +34,7 @@ export class AuthService {
 
   register(email: string, password: string): Observable<any> {
     const body = { email, password };
-    return this.http.post(`${environment.API_URL}/users/create`, body);
+    return this.http.post(`${environment.API_URL}/users/register`, body);
   }
 
   getRole(): string | null {
