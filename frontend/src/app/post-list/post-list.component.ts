@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { Post } from '../models/post';
 import { PostService } from '../services/post.service';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../services/auth.service';
+
 
 @Component({
   selector: 'app-post-list',
@@ -12,12 +14,15 @@ import { CommonModule } from '@angular/common';
 })
 export class PostListComponent {
   postList: Post[] = [];
+  userRole: string | null = null;
 
   constructor(
-    private postService: PostService
+    private postService: PostService,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
+    this.userRole = this.authService.getRole();
     this.postService.getPost().subscribe({
       next: data => {
         this.postList = data;
