@@ -1,0 +1,33 @@
+<div class="login-container">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <h2>Connexion</h2>
+      <div>
+        <label for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="Entrez votre email"
+        />
+        <div *ngIf="email.invalid && email.touched" class="error">
+          Email invalide.
+        </div>
+      </div>
+  
+      <div>
+        <label for="password">Mot de passe</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="Entrez votre mot de passe"
+        />
+        <div *ngIf="password.invalid && password.touched" class="error">
+          Mot de passe requis.
+        </div>
+      </div>
+  
+      <button type="submit" [disabled]="loginForm.invalid">Se connecter</button>
+    </form>
+  </div>
+  
